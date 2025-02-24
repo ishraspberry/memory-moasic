@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Service for the Express app
+  express-app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment: # Firebase config
+      - FB_API_KEY=${FB_API_KEY}
+      - FB_AUTH_DOMAIN=${FB_AUTH_DOMAIN}
+      - FB_PROJECT_ID=${FB_PROJECT_ID}
+      - FB_STORAGE_BUCKET=${FB_STORAGE_BUCKET}
+      - FB_MESSAGING_SENDER_ID=${FB_MESSAGING_SENDER_ID}
+      - FB_APP_ID=${FB_APP_ID}
+      - FB_MEASUREMENT_ID=${FB_MEASUREMENT_ID}
+    container_name: express-container
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./my-express-app:/usr/src/app
+    networks:
+      - app-network
+
+  # Service for the React app
+  react-app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment: # Firebase config
+      - FB_API_KEY=${FB_API_KEY}
+      - FB_AUTH_DOMAIN=${FB_AUTH_DOMAIN}
+      - FB_PROJECT_ID=${FB_PROJECT_ID}
+      - FB_STORAGE_BUCKET=${FB_STORAGE_BUCKET}
+      - FB_MESSAGING_SENDER_ID=${FB_MESSAGING_SENDER_ID}
+      - FB_APP_ID=${FB_APP_ID}
+      - FB_MEASUREMENT_ID=${FB_MEASUREMENT_ID}
+    container_name: react-container
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
